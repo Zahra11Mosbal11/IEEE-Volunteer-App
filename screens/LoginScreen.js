@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
@@ -43,7 +43,13 @@ export default function LoginScreen({ navigation }) {
   };
   
   return (
+    
     <View style={styles.container}>
+      <ImageBackground
+      source={require('../assets/loginBackground.jpg')}
+      style={styles.ImageBackground}
+      resizeMode='cover'
+    />
       <View style={styles.card}>
         <Image source={require('../assets/ieee.png')} style={styles.logo} />
 
@@ -71,18 +77,26 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  ImageBackground:{
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#EEEE',
   },
   card: {
-    width: '85%',
+    
+    width: '80%',
     padding: 20,
     borderRadius: 20,
     backgroundColor: '#00629B',
     alignItems: 'center',
+    boxShadow: '10',
     elevation: 5,
   },
   logo: {
@@ -101,7 +115,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   button: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 10,
