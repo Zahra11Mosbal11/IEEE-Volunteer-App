@@ -20,8 +20,8 @@ export default StyleSheet.create({
     
     
   },
-  logo: { width: 60, height: 60, resizeMode: 'contain', padding:5 },
-  icon: { width: 35, height: 35, resizeMode: 'contain', padding:5 },
+  logo: { width: 60, height: 60, resizeMode: 'contain', padding:5,  },
+  icon: { width: 35, height: 35, resizeMode: 'contain', padding:5,},
   card: {
     backgroundColor: '#EEEEEE',
     padding: 20,
@@ -49,6 +49,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    padding: 20,
   },
   flagIcon: {
     width: 30,
@@ -62,6 +63,7 @@ export default StyleSheet.create({
     fontSize: 14,
     color: '#333',
     flex: 1,
+    padding: 20,
   },
   footerText: {
     marginTop: 15,
@@ -74,6 +76,51 @@ export default StyleSheet.create({
     textAlign: 'center',
     padding: 5,
     marginBottom: 20,
+  },
+  accountBox: {
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    padding: 20,
+    borderRadius: 12,
+    width: '80%',
+    alignSelf: 'center',
+    elevation: 5,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  name: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  team: {
+    fontSize: 14,
+    color: '#555',
+   
+  },
+  popupContainer: {
+    position: 'absolute',
+    marginTop: 50,
+    top: 50,
+    right: 10,
+    backgroundColor: '#EEEEEE',
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  menuItem: {
+    textAlign: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
 });
 

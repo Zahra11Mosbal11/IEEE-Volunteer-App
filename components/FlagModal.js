@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
-import styles from '../styles/homeStyles';
+
 
 export default function FlagsModal({ yellowFlags, redFlags, onClose }) {
   return (
@@ -9,7 +9,7 @@ export default function FlagsModal({ yellowFlags, redFlags, onClose }) {
       {yellowFlags.length === 0 ? (
         <Text style={styles.flagText}>No yellow flags</Text>
       ) : yellowFlags.map(flag => (
-        <View key={flag.id} style={styles.flagRow}>
+        <View key={flag.id} style={styles.flagMRow}>
           <Image source={require('../assets/yellow-flag.png')} style={styles.flagIcon} />
           <Text style={styles.flagText}>
           {new Date(flag.givenAt).toLocaleDateString()} {flag.reason}
@@ -21,7 +21,7 @@ export default function FlagsModal({ yellowFlags, redFlags, onClose }) {
       {redFlags.length === 0 ? (
         <Text style={styles.flagText}>No red flags</Text>
       ) : redFlags.map(flag => (
-        <View key={flag.id} style={styles.flagRow}>
+        <View key={flag.id} style={styles.flagMRow}>
           <Image source={require('../assets/red-flag.png')} style={styles.flagIcon} />
           <Text style={styles.flagText}>
            {new Date(flag.givenAt).toLocaleDateString()} {flag.reason} 
@@ -38,3 +38,43 @@ export default function FlagsModal({ yellowFlags, redFlags, onClose }) {
     </ScrollView>
   );
 }
+const styles = StyleSheet.create({
+ 
+  modalContent: {
+    backgroundColor: '#fff', padding: 5, borderRadius: 15, width: '80%', alignItems: 'center'
+  },
+  flagMRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    padding: 20,
+  },
+  flagIcon: {
+    justifyContent: 'flex-start',
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+   
+
+  },
+  flagText: {
+    alignItems: 'flex',
+    justifyContent: 'center',
+    fontSize: 14,
+    color: '#333',
+    flex: 1,
+    
+  },
+  footerText: {
+    marginTop: 15,
+    fontSize: 14,
+    textAlign: 'center'
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 5,
+    marginBottom: 20,
+  },
+  })

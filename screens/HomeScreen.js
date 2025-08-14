@@ -1,13 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, SafeAreaView,ImageBackground,ScrollView } from 'react-native';
+import SideMenu from 'react-native-side-menu-updated';
 import { AuthContext } from '../context/AuthContext';
 import styles from '../styles/homeStyles';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import { fetchCertData } from '../api/certificateApi';
 import CertificateModal from '../components/certificateModal';
 import { fetchFlagsData } from '../api/flagsApi';
 import FlagModal from '../components/FlagModal';
+import DashedCircle from '../components/DashedCircle';
+import RatingModal from '../components/RatingModal';
 
 
 
@@ -15,6 +18,8 @@ import FlagModal from '../components/FlagModal';
 export default function HomeScreen() {
   const { userToken, logout } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
   const [modalContent, setModalContent] = useState('');
   const [message, setMessage] = useState('');
   const [certificateData, setCertificat] = useState([]);
@@ -22,6 +27,22 @@ export default function HomeScreen() {
   const [redCount, setRedCount] = useState(0);
   const [yellowFlags, setYellowFlags] = useState([]);
   const [redFlags, setRedFlags] = useState([]);
+
+  const toggleMenu = () => {
+    if (menuOpen) {
+      menuRef.current?.close();
+    } else {
+      menuRef.current?.open();
+    }
+    setMenuOpen(!menuOpen);
+  };
+
+  const userData = {
+    name: "FirstName LastName",
+    team: "Team",
+    subteam: "Subteam",
+    profilePic: require('../assets/profile.png')
+  };
 
   const fetchProtectedData = async () => {
     try {
@@ -84,19 +105,49 @@ export default function HomeScreen() {
 
   return (
     
+    <MenuProvider>
     <SafeAreaView style={styles.container}>
+
       {/* AppBar */}
       <View style={styles.appBar}>
         <Image source={require('../assets/ieee.png')} style={styles.logo} />
-        <TouchableOpacity>
-          <Image source={require('../assets/acount.png')} style={styles.icon} />
-        </TouchableOpacity>
+        <Menu
+            ref={menuRef}
+            onOpen={() => setMenuOpen(true)}
+            onClose={() => setMenuOpen(false)}
+          >
+            <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }} onPress={toggleMenu}>
+              <Image
+                source={
+                  menuOpen
+                    ? require('../assets/close.png')
+                    : require('../assets/acount.png')
+                }
+                style={styles.icon}
+              />
+            </MenuTrigger>
+      
+            <MenuOptions customStyles={{ optionsContainer: styles.popupContainer }}>
+              <View style={{ alignItems: 'center', padding: 10 }}>
+                <Image source={require('../assets/profile.png')} style={styles.avatar} />
+                <Text style={styles.name}>{userData.name}</Text>
+                <Text style={styles.team}>{`${userData.team} - ${userData.subteam}`}</Text>
+              </View>
+              <MenuOption onSelect={() => alert('Change password')}>
+                <Text style={styles.menuItem}>Change Password</Text>
+              </MenuOption>
+              <MenuOption onSelect={logout}>
+                <Text style={[styles.menuItem, { color: '#00629B' }]}>Log Out</Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
       </View>
         <ScrollView >
+
         <ImageBackground
       source={require('../assets/loginBackground.jpg')}
       style={styles.ImageBackground}
-      resizeMode='cover'
+      resizeMode= 'cover'
     />
       {/* Cards */}<TouchableOpacity style={[styles.card, { marginTop: 40 }]} activeOpacity={1} onPress={() => openModal('certificate')}>
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
@@ -140,8 +191,19 @@ export default function HomeScreen() {
     </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card} activeOpacity={1} onPress={() => openModal('تقييم الشهر الحالي')}>
-        <Text style={styles.cardText}>التقييم</Text>
+      <TouchableOpacity style={styles.card} activeOpacity={1} onPress={() => openModal('Rating')}>
+        <Text style={styles.modalTitle}>Rating</Text>
+        <View style={styles.flagRow}>
+          <DashedCircle />
+          <Text style={styles.flagText}> Average Rating</Text>
+        </View>
+        <View style={styles.flagRow}>
+          <DashedCircle/>
+          <Text style={styles.flagText}> Last month’s rating </Text>
+        </View>
+            <Text style={{ fontSize: 12, color: '#888', marginTop: 20 }}>
+      Tap for details
+    </Text>
       </TouchableOpacity>
 
       {/* Modal */}
@@ -161,7 +223,9 @@ export default function HomeScreen() {
               <CertificateModal
                 certificateData={certificateData}
               />
-            ) :(
+            ):  modalContent === 'Rating' ? (
+              <RatingModal/>
+            ):(
               <Text style={styles.modalTitle}>{modalContent}</Text>
             )}
 
@@ -173,7 +237,7 @@ export default function HomeScreen() {
       </Modal>
       </ScrollView>
     </SafeAreaView>
-  
+    </MenuProvider>
     
   );
 }
