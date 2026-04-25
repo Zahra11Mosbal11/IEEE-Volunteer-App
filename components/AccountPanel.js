@@ -3,6 +3,17 @@ import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import Modal from 'react-native-modal';
 import styles from '../styles/homeStyles';
 
+/**
+ * Modal component that displays the user's account details (avatar, name, team)
+ * and provides options to change password and log out.
+ *
+ * @param {Object} props - React props
+ * @param {boolean} props.visible - Whether the modal is visible
+ * @param {Function} props.onClose - Callback function to close the modal
+ * @param {Object} props.userData - User profile data (name, team, subteam, profilePic)
+ * @param {Function} props.onLogout - Callback function handling user logout
+ * @returns {JSX.Element} The AccountModal component
+ */
 export default function AccountModal({ visible, onClose, userData, onLogout }) {
   return (
     <Modal

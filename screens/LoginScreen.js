@@ -2,6 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 
+/**
+ * Authenticates user credentials and redirects to Home if successful.
+ *
+ * @param {Object} props - React Navigation props
+ * @param {Object} props.navigation - Navigation object provided by React Navigation
+ * @returns {JSX.Element} The LoginScreen component
+ */
 export default function LoginScreen({ navigation }) {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
@@ -96,7 +103,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#00629B',
     alignItems: 'center',
-    boxShadow: '10',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     elevation: 5,
   },
   logo: {

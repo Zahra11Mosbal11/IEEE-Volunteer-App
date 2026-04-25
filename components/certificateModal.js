@@ -4,6 +4,14 @@ import { View, Text, Modal, StyleSheet, ScrollView } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { CheckCircle, AlertCircle } from 'lucide-react-native';
 
+/**
+ * Modal component that displays the user's certification status, 
+ * fulfilled conditions, and suggestions for improvement.
+ *
+ * @param {Object} props - React props
+ * @param {Object} props.certificateData - Certificate data object containing percentage, fulfilled criteria, and suggestions
+ * @returns {JSX.Element} The CertificateModal component
+ */
 const CertificateModal = ({certificateData }) => {
   const fulfilled = [
     ...(certificateData.general?.fulfilled || []),

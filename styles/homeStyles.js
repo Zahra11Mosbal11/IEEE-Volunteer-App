@@ -20,7 +20,7 @@ export default StyleSheet.create({
     
     
   },
-  logo: { width: 60, height: 60, resizeMode: 'contain', padding:5,  },
+  logo: { width: 60, height: 60, resizeMode: 'contain', padding:3, marginLeft: 10 },
   icon: { width: 35, height: 35, resizeMode: 'contain', padding:5,},
   card: {
     backgroundColor: '#EEEEEE',

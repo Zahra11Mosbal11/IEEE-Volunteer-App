@@ -7,6 +7,12 @@ import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 
+/**
+ * Main application navigation stack.
+ * Defines the routing between the Login Screen and Home Screen.
+ *
+ * @returns {JSX.Element} The Navigation container
+ */
 export default function AppNavigator() {
   return (
     <NavigationContainer>

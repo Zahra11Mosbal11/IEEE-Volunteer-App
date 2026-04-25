@@ -2,6 +2,12 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
+/**
+ * A customized SVG Dashed Circle component designed to visually represent
+ * ratings or fractional progress with a dotted outline.
+ *
+ * @returns {JSX.Element} The DashedCircle layout
+ */
 export default function DashedCircle() {
   const size = 70; // قطر الدائرة
   const strokeWidth = 6;

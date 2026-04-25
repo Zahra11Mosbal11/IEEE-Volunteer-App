@@ -4,22 +4,27 @@ import SideMenu from 'react-native-side-menu-updated';
 import { AuthContext } from '../context/AuthContext';
 import styles from '../styles/homeStyles';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { MenuProvider } from 'react-native-popup-menu';
+import NotificationMenuTrigger from '../components/NotificationMenuTrigger';
+import ProfileMenuTrigger from '../components/ProfileMenuTrigger';
 import { fetchCertData } from '../api/certificateApi';
-import CertificateModal from '../components/certificateModal';
+import CertificateModal from '../components/CertificateModal';
 import { fetchFlagsData } from '../api/flagsApi';
+import { fetchProtectedData } from '../api/authApi';
 import FlagModal from '../components/FlagModal';
 import DashedCircle from '../components/DashedCircle';
 import RatingModal from '../components/RatingModal';
 
-
-
-
+/**
+ * Main dashboard screen displaying user certificate progress, flags, and ratings.
+ *
+ * @returns {JSX.Element} The rendered HomeScreen component
+ */
 export default function HomeScreen() {
+  
   const { userToken, logout } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+
   const [modalContent, setModalContent] = useState('');
   const [message, setMessage] = useState('');
   const [certificateData, setCertificat] = useState([]);
@@ -27,15 +32,9 @@ export default function HomeScreen() {
   const [redCount, setRedCount] = useState(0);
   const [yellowFlags, setYellowFlags] = useState([]);
   const [redFlags, setRedFlags] = useState([]);
+  const [hasNewNotifications, setHasNewNotifications] = useState(true);
 
-  const toggleMenu = () => {
-    if (menuOpen) {
-      menuRef.current?.close();
-    } else {
-      menuRef.current?.open();
-    }
-    setMenuOpen(!menuOpen);
-  };
+
 
   const userData = {
     name: "FirstName LastName",
@@ -44,17 +43,13 @@ export default function HomeScreen() {
     profilePic: require('../assets/profile.png')
   };
 
-  const fetchProtectedData = async () => {
+  /**
+   * Fetches the protected dashboard data using the user's token.
+   * Updates the local message state with the response.
+   */
+  const loadProtectedData = async () => {
     try {
-      const response = await fetch('https://ieee-sustech-sb-va.vercel.app/api/mobile/auth/success', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userToken}`
-        }
-      });
-
-      const data = await response.json();
+      const data = await fetchProtectedData(userToken);
       console.log('Protected API Response:', data);
       setMessage(data.message);
     } catch (error) {
@@ -92,7 +87,7 @@ export default function HomeScreen() {
     }
   };
   useEffect(() => {
-    fetchProtectedData();
+    loadProtectedData();
     fetchFlags();
     fetchCert();
   }, []);
@@ -111,36 +106,14 @@ export default function HomeScreen() {
       {/* AppBar */}
       <View style={styles.appBar}>
         <Image source={require('../assets/ieee.png')} style={styles.logo} />
-        <Menu
-            ref={menuRef}
-            onOpen={() => setMenuOpen(true)}
-            onClose={() => setMenuOpen(false)}
-          >
-            <MenuTrigger customStyles={{ TriggerTouchableComponent: TouchableOpacity }} onPress={toggleMenu}>
-              <Image
-                source={
-                  menuOpen
-                    ? require('../assets/close.png')
-                    : require('../assets/acount.png')
-                }
-                style={styles.icon}
-              />
-            </MenuTrigger>
-      
-            <MenuOptions customStyles={{ optionsContainer: styles.popupContainer }}>
-              <View style={{ alignItems: 'center', padding: 10 }}>
-                <Image source={require('../assets/profile.png')} style={styles.avatar} />
-                <Text style={styles.name}>{userData.name}</Text>
-                <Text style={styles.team}>{`${userData.team} - ${userData.subteam}`}</Text>
-              </View>
-              <MenuOption onSelect={() => alert('Change password')}>
-                <Text style={styles.menuItem}>Change Password</Text>
-              </MenuOption>
-              <MenuOption onSelect={logout}>
-                <Text style={[styles.menuItem, { color: '#00629B' }]}>Log Out</Text>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
+        
+        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <NotificationMenuTrigger 
+            hasNewNotifications={hasNewNotifications}
+            onMenuOpened={() => setHasNewNotifications(false)}
+          />
+          <ProfileMenuTrigger userData={userData} logout={logout} />
+        </View>
       </View>
         <ScrollView >
 
@@ -177,7 +150,7 @@ export default function HomeScreen() {
       <Text style={styles.modalTitle}>Flags</Text>
         <View style={styles.flagRow}>
           <Image source={require('../assets/yellow-flag.png')} style={styles.flagIcon} />
-          //<Text style={styles.flagText}>Yellow Flags: {yellowCount}</Text>
+         <Text style={styles.flagText}>Yellow Flags: {yellowCount}</Text> 
         </View>
         <View style={styles.flagRow}>
             <Image source={require('../assets/red-flag.png')} style={styles.flagIcon} />

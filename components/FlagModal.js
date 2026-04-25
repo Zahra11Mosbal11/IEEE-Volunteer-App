@@ -2,6 +2,16 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 
 
+/**
+ * Modal component displaying active yellow and red flags assigned to the user,
+ * along with the reasons and dates.
+ *
+ * @param {Object} props - React props
+ * @param {Array} props.yellowFlags - Array of active yellow flag objects
+ * @param {Array} props.redFlags - Array of active red flag objects
+ * @param {Function} props.onClose - Callback function to close the modal
+ * @returns {JSX.Element} The FlagsModal component
+ */
 export default function FlagsModal({ yellowFlags, redFlags, onClose }) {
   return (
     <ScrollView contentContainerStyle={styles.modalContent}>

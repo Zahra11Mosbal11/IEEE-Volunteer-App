@@ -3,6 +3,14 @@ import * as SecureStore from 'expo-secure-store';
 
 export const AuthContext = createContext();
 
+/**
+ * Provides authentication state and actions (login, logout, token verification)
+ * to the rest of the application.
+ *
+ * @param {Object} props - React components
+ * @param {React.ReactNode} props.children - Child components that require auth context
+ * @returns {JSX.Element} The AuthContext provider
+ */
 export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(null);
 
