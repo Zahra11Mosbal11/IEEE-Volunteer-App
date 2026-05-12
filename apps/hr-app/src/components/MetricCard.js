@@ -1,6 +1,18 @@
+/**
+ * @file MetricCard.js
+ * @description Small card component for displaying individual analytics metrics.
+ */
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+/**
+ * MetricCard Component
+ * @param {Object} props - Component props
+ * @param {string} props.title - Label for the metric
+ * @param {string|number} props.value - Value to display
+ * @param {string} [props.valueColor='#000000'] - Optional color for the value text
+ */
 const MetricCard = ({ title, value, valueColor = '#000000' }) => {
   return (
     <View style={styles.card}>

@@ -1,3 +1,9 @@
+/**
+ * @file AppNavigator.js
+ * @description Main navigation configuration for the HR app.
+ * Handles both Stack and Drawer navigation structures.
+ */
+
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -13,6 +19,11 @@ import CustomDrawerContent from '../components/CustomDrawerContent';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
+/**
+ * MainDrawer Component
+ * Defines the drawer-based navigation for the main application areas.
+ * @returns {React.ReactElement} The Drawer navigator
+ */
 function MainDrawer() {
   return (
     <Drawer.Navigator 
@@ -32,6 +43,11 @@ function MainDrawer() {
   );
 }
 
+/**
+ * AppNavigator Component
+ * The root navigator that switches between Login and the main application (MainDrawer).
+ * @returns {React.ReactElement} The root Stack navigator
+ */
 export default function AppNavigator() {
   return (
     <NavigationContainer>

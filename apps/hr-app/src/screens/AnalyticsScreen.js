@@ -1,8 +1,18 @@
+/**
+ * @file AnalyticsScreen.js
+ * @description Screen for viewing performance analytics and metrics for the team.
+ */
+
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import Header from '../components/Header';
 import MetricCard from '../components/MetricCard';
 
+/**
+ * AnalyticsScreen Component
+ * @param {Object} props - Navigation props
+ * @returns {React.ReactElement} The AnalyticsScreen component
+ */
 const AnalyticsScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>

@@ -1,3 +1,9 @@
+/**
+ * @file TeamMembersScreen.js
+ * @description Screen for managing IEEE student branch team members.
+ * Refined with background decorations, a left-aligned action button, and a unified card layout.
+ */
+
 import React, { useState, useEffect, useContext } from 'react';
 import { 
   View, 
@@ -8,16 +14,22 @@ import {
   ScrollView, 
   SafeAreaView, 
   ActivityIndicator, 
-  Alert 
+  Alert,
+  Dimensions,
+  RefreshControl
 } from 'react-native';
-import { Search, Plus } from 'lucide-react-native';
+import { Search, Plus, Users } from 'lucide-react-native';
 import Header from '../components/Header';
 import MemberCard from '../components/MemberCard';
 import AddMemberModal from '../components/AddMemberModal';
 import { AuthContext } from '../context/AuthContext';
 
+const { width } = Dimensions.get('window');
 const API_URL = 'https://ieee-sustech-sb-va.vercel.app/api/mobile/users';
 
+/**
+ * TeamMembersScreen Component
+ */
 const TeamMembersScreen = ({ navigation }) => {
   const { userToken, logout } = useContext(AuthContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -26,12 +38,11 @@ const TeamMembersScreen = ({ navigation }) => {
   const [members, setMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [processing, setProcessing] = useState(false);
   
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    position: '',
+    name: '', email: '', position: '',
     joinDate: new Date().toLocaleDateString(),
   });
 
@@ -40,7 +51,7 @@ const TeamMembersScreen = ({ navigation }) => {
   }, []);
 
   const fetchMembers = async () => {
-    setLoading(true);
+    if (!refreshing) setLoading(true);
     try {
       const response = await fetch(API_URL, {
         headers: { 'Authorization': `Bearer ${userToken}` }
@@ -53,37 +64,24 @@ const TeamMembersScreen = ({ navigation }) => {
       }
 
       const data = await response.json();
-      if (Array.isArray(data)) {
-        setMembers(data);
-      } else {
-        setMembers([]);
-      }
+      setMembers(Array.isArray(data) ? data : []);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch team members');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchMembers();
   };
 
   const handleSaveMember = async () => {
     const { name, email, position } = formData;
-
-    // Basic Validation
     if (!name || !email || !position) {
-      Alert.alert('Required Fields', 'Please fill in all required fields marked with *');
-      return;
-    }
-
-    // Name Validation
-    if (name.trim().length < 2) {
-      Alert.alert('Invalid Name', 'Name must be at least 2 characters long');
-      return;
-    }
-
-    // Email Validation (Regex)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address');
+      Alert.alert('Required Fields', 'Please fill in all required fields');
       return;
     }
 
@@ -101,7 +99,7 @@ const TeamMembersScreen = ({ navigation }) => {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          role: formData.position, // Mapping form 'position' to API 'role'
+          role: formData.position,
           joinDate: formData.joinDate,
         }),
       });
@@ -142,18 +140,7 @@ const TeamMembersScreen = ({ navigation }) => {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${userToken}` }
               });
-
-              if (response.status === 401) {
-                await logout();
-                navigation.replace('Login');
-                return;
-              }
-
-              if (response.ok) {
-                Alert.alert('Deleted', 'Member removed successfully');
-                // Optional: still fetch to ensure sync with server
-                fetchMembers();
-              }
+              if (response.ok) fetchMembers();
             } catch (error) {
               Alert.alert('Error', 'An error occurred');
             }
@@ -163,55 +150,62 @@ const TeamMembersScreen = ({ navigation }) => {
     );
   };
 
+  const openAddModal = () => {
+    setIsEditMode(false);
+    setFormData({
+      name: '', email: '', position: '',
+      joinDate: new Date().toLocaleDateString(),
+    });
+    setIsModalVisible(true);
+  };
+
   const openEditModal = (member) => {
     setIsEditMode(true);
     setSelectedMemberId(member.id || member._id);
     setFormData({
       name: member.name,
       email: member.email,
-      position: member.role || member.position, // Map API 'role' back to form 'position'
+      position: member.role || member.position,
       joinDate: member.joinDate || new Date().toLocaleDateString(),
     });
     setIsModalVisible(true);
   };
 
-  const closeModal = () => {
-    setIsModalVisible(false);
-    setIsEditMode(false);
-    setSelectedMemberId(null);
-    setFormData({
-      name: '', email: '', position: '',
-      joinDate: new Date().toLocaleDateString(),
-    });
-  };
+  const closeModal = () => setIsModalVisible(false);
 
   const filteredMembers = members.filter(m => {
     const name = m.name?.toLowerCase() || '';
     const role = (m.role || m.position)?.toLowerCase() || '';
     const query = searchQuery.toLowerCase();
-    
     return name.includes(query) || role.includes(query);
   });
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Background Decorations */}
+      <View style={styles.bgDecoration1} />
+      <View style={styles.bgDecoration2} />
+
       <Header navigation={navigation} />
       
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <View style={styles.titleSection}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={styles.headerSection}>
           <Text style={styles.title}>Team Members</Text>
           <Text style={styles.subtitle}>Manage your IEEE student branch team</Text>
+          
+          <TouchableOpacity style={styles.addButton} onPress={openAddModal}>
+            <Plus size={20} color="#FFFFFF" />
+            <Text style={styles.addButtonText}>Add Member</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity 
-          style={styles.addButton} 
-          onPress={() => { setIsEditMode(false); setIsModalVisible(true); }}
-        >
-          <Plus size={20} color="#FFFFFF" />
-          <Text style={styles.addButtonText}>Add Member</Text>
-        </TouchableOpacity>
-
-        <View style={styles.searchContainer}>
+        <View style={styles.mainCard}>
           <View style={styles.searchBar}>
             <Search size={20} color="#94A3B8" style={styles.searchIcon} />
             <TextInput 
@@ -222,27 +216,28 @@ const TeamMembersScreen = ({ navigation }) => {
               onChangeText={setSearchQuery}
             />
           </View>
-        </View>
 
-        <View style={styles.contentCard}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#000000" />
-          ) : filteredMembers.length > 0 ? (
-            <View style={styles.membersList}>
-              {filteredMembers.map(member => (
+          <View style={styles.listContainer}>
+            {loading ? (
+              <ActivityIndicator size="large" color="#0F172A" style={{ marginVertical: 40 }} />
+            ) : filteredMembers.length > 0 ? (
+              filteredMembers.map(member => (
                 <MemberCard 
                   key={member.id || member._id} 
                   member={member} 
                   onEdit={openEditModal} 
                   onDelete={handleDeleteMember} 
                 />
-              ))}
-            </View>
-          ) : (
-            <Text style={styles.emptyText}>
-              {searchQuery ? 'No members match your search.' : 'No team members yet.'}
-            </Text>
-          )}
+              ))
+            ) : (
+              <View style={styles.emptyState}>
+                <Users size={40} color="#E2E8F0" />
+                <Text style={styles.emptyText}>
+                  {searchQuery ? 'No members found' : 'No team members yet. Add your first member!'}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
       </ScrollView>
 
@@ -262,72 +257,105 @@ const TeamMembersScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#F0F7FF',
+  },
+  bgDecoration1: {
+    position: 'absolute',
+    top: -50,
+    left: -100,
+    width: width * 1.2,
+    height: width * 1.2,
+    borderRadius: width * 0.6,
+    backgroundColor: '#E6F0FF',
+    zIndex: -1,
+  },
+  bgDecoration2: {
+    position: 'absolute',
+    bottom: -150,
+    right: -100,
+    width: width * 1.5,
+    height: width * 1.5,
+    borderRadius: width * 0.75,
+    backgroundColor: '#E6F0FF',
+    zIndex: -1,
   },
   scrollContent: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingBottom: 40,
   },
-  titleSection: {
-    marginBottom: 24,
+  headerSection: {
+    marginTop: 20,
+    marginBottom: 30,
   },
   title: {
-    fontSize: 28,
+    fontSize: 34,
     fontWeight: '800',
     color: '#0F172A',
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#64748B',
-    marginTop: 4,
+    marginTop: 8,
+    marginBottom: 20,
   },
   addButton: {
-    backgroundColor: '#0F172A',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 24,
+    backgroundColor: '#05070A',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
     gap: 8,
   },
   addButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
   },
-  searchContainer: {
-    marginBottom: 24,
+  mainCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 20,
+    minHeight: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 15,
+    elevation: 5,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F1F5F9',
     borderRadius: 12,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    paddingHorizontal: 16,
+    height: 48,
+    marginBottom: 20,
   },
   searchIcon: {
-    marginRight: 8,
+    marginRight: 10,
   },
   searchInput: {
     flex: 1,
-    height: 44,
-    fontSize: 15,
-    color: '#0F172A',
+    fontSize: 16,
+    color: '#1E293B',
   },
-  contentCard: {
+  listContainer: {
     flex: 1,
   },
-  membersList: {
-    gap: 4,
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 60,
+    gap: 12,
   },
   emptyText: {
-    textAlign: 'center',
     color: '#94A3B8',
     fontSize: 15,
-    marginTop: 40,
+    fontWeight: '500',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });
 

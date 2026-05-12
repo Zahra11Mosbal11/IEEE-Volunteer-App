@@ -1,3 +1,9 @@
+/**
+ * @file LoginScreen.js
+ * @description Authentication screen for the HR app.
+ * Handles user login and session initialization.
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { AuthContext } from '../context/AuthContext';

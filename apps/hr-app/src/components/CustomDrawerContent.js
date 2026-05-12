@@ -1,8 +1,22 @@
+/**
+ * @file CustomDrawerContent.js
+ * @description Custom layout for the sidebar/drawer navigation.
+ * Includes navigation links and a logout button.
+ */
+
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Home, Users, BarChart3, Calendar, LogOut } from 'lucide-react-native';
 import { AuthContext } from '../context/AuthContext';
 
+/**
+ * DrawerItem Component
+ * @param {Object} props - Component props
+ * @param {string} props.label - Label text for the item
+ * @param {React.Component} props.icon - Lucide icon component
+ * @param {boolean} props.active - Whether the item is currently active
+ * @param {Function} props.onPress - Function called when item is pressed
+ */
 const DrawerItem = ({ label, icon: Icon, active, onPress }) => {
   return (
     <TouchableOpacity 
@@ -15,6 +29,12 @@ const DrawerItem = ({ label, icon: Icon, active, onPress }) => {
   );
 };
 
+/**
+ * CustomDrawerContent Component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - Navigation object
+ * @param {Object} props.state - Navigation state object
+ */
 const CustomDrawerContent = ({ navigation, state }) => {
   const { logout } = useContext(AuthContext);
   const currentRouteName = state.routeNames[state.index];

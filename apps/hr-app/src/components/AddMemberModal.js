@@ -1,3 +1,8 @@
+/**
+ * @file AddMemberModal.js
+ * @description Modal component for adding or editing a team member.
+ */
+
 import React from 'react';
 import { 
   View, 
@@ -13,6 +18,17 @@ import {
 } from 'react-native';
 import { X, Calendar } from 'lucide-react-native';
 
+/**
+ * AddMemberModal Component
+ * @param {Object} props - Component props
+ * @param {boolean} props.visible - Whether the modal is visible
+ * @param {Function} props.onClose - Function to close the modal
+ * @param {boolean} props.isEditMode - Whether the modal is in edit mode
+ * @param {Object} props.formData - Current form data
+ * @param {Function} props.setFormData - Function to update form data
+ * @param {Function} props.onSave - Function to save the member
+ * @param {boolean} props.processing - Whether a request is being processed
+ */
 const AddMemberModal = ({ 
   visible, 
   onClose, 

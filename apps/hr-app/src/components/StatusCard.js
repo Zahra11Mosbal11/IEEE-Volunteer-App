@@ -1,6 +1,22 @@
+/**
+ * @file StatusCard.js
+ * @description Card component for displaying status summaries (e.g., Rising Stars, Needs Attention).
+ */
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+/**
+ * StatusCard Component
+ * @param {Object} props - Component props
+ * @param {string} props.title - Title of the card
+ * @param {string} props.subtitle - Short subtitle
+ * @param {string} props.description - Detailed description
+ * @param {React.Component} props.icon - Lucide icon component
+ * @param {string} props.color - Primary color for the title and icon
+ * @param {string} props.backgroundColor - Background color for the card
+ * @param {string} props.borderColor - Border color for the card
+ */
 const StatusCard = ({ title, subtitle, description, icon: Icon, color, backgroundColor, borderColor }) => {
   return (
     <View style={[styles.card, { backgroundColor, borderColor }]}>

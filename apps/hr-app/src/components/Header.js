@@ -1,7 +1,19 @@
+/**
+ * @file Header.js
+ * @description Common header component used across multiple screens.
+ * Includes a drawer toggle, notification badge, and user avatar.
+ */
+
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Menu, Bell } from 'lucide-react-native';
 
+/**
+ * Header Component
+ * @param {Object} props - Component props
+ * @param {Object} props.navigation - Navigation object
+ * @param {string} [props.title] - Optional title (not currently used in the layout)
+ */
 const Header = ({ navigation, title }) => {
   return (
     <View style={styles.header}>

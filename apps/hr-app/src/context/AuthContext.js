@@ -1,8 +1,18 @@
+/**
+ * @file AuthContext.js
+ * @description Authentication context for managing user tokens and session state.
+ */
+
 import React, { createContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 
 export const AuthContext = createContext();
 
+/**
+ * AuthProvider Component
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ */
 export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(null);
   
