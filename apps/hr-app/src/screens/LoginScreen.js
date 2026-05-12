@@ -53,12 +53,12 @@ export default function LoginScreen({ navigation }) {
     
     <View style={styles.container}>
       <ImageBackground
-      source={require('../assets/loginBackground.jpg')}
+      source={require('../../assets/loginBackground.jpg')}
       style={styles.ImageBackground}
       resizeMode='cover'
     />
       <View style={styles.card}>
-        <Image source={require('../assets/ieee.png')} style={styles.logo} />
+        <Image source={require('../../assets/ieee.png')} style={styles.logo} />
 
         <TextInput
           style={styles.input}
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     textAlign: 'left',
+    backgroundColor: '#FFF'
   },
   button: {
     backgroundColor: '#FFF',

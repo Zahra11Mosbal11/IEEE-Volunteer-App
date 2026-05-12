@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
-import { Home, Users, BarChart3, Calendar } from 'lucide-react-native';
+import { Home, Users, BarChart3, Calendar, LogOut } from 'lucide-react-native';
+import { AuthContext } from '../context/AuthContext';
 
 const DrawerItem = ({ label, icon: Icon, active, onPress }) => {
   return (
@@ -15,7 +16,13 @@ const DrawerItem = ({ label, icon: Icon, active, onPress }) => {
 };
 
 const CustomDrawerContent = ({ navigation, state }) => {
+  const { logout } = useContext(AuthContext);
   const currentRouteName = state.routeNames[state.index];
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace('Login');
+  };
 
   const menuItems = [
     { name: 'Home', label: 'Home', icon: Home },
@@ -36,6 +43,13 @@ const CustomDrawerContent = ({ navigation, state }) => {
             onPress={() => navigation.navigate(item.name)}
           />
         ))}
+      </View>
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <LogOut size={22} color="#FFFFFF" />
+          <Text style={styles.logoutLabel}>Log Out</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -63,6 +77,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
   drawerLabel: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  footer: {
+    marginTop: 'auto',
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    gap: 12,
+  },
+  logoutLabel: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
